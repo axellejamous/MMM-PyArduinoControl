@@ -2,6 +2,8 @@
 
 ## https://github.com/paviro/MMM-Facial-Recognition was used as a base for this code      
 
+### >Currently under development<
+
 This module is meant to control Arduino boards with WiFi connectivity through the use of MQTT so that notifications can be sent when stuff happens and pulses get sent when stuff needs to happen.
 
 More specifically, in this case, this module will control:
@@ -14,5 +16,6 @@ Both will be able to be triggered in two ways, using two other modules:
   2. Alarm https://github.com/fewieden/MMM-AlarmClock
 
 How:
-  1. Voice control: by saying "LIGHTS ON" and "SET COFFEE"
-  2. When the alarm is sounded it will ask the User if he wants Coffee, if "YES" is replied in voice control, it will get set. The light bulb will automatically light gradually.
+  - Voice control: by saying "LIGHTS ON" and "SET COFFEE"
+  - When the alarm is sounded it will ask the User if he wants Coffee, if "YES" is replied in voice control, it will get set.        
+      The light bulb will light up gradually.
