@@ -10,13 +10,14 @@ module.exports = NodeHelper.create({
 		const self = this;
 		const pyshell = new PythonShell('modules/' + this.name + '/python/mqttcontroller.py', { mode: 'json', args: [JSON.stringify(this.config)]});
 	
-		pyshell.on('payload', function(payload){
-			if (payload.hasOwnProperty('btnPressed')){
-				console.log("[" + self.name + "] " + payload.btnPressed);				
+		pyshell.on('message', function(message){
+			if (message.hasOwnProperty('btnPressed')){ //message.hasOwnProperty = a in to_node(a,b) / message = b in to_node(a,b) in json format
+				console.log("[" + self.name + "] " + message.btnPressed);				
 				
 				//do something when button pressed
 				//see https://github.com/paviro/MMM-Facial-Recognition/blob/master/node_helper.js#L20
-				self.sendSocketNotification('');
+				
+				self.sendSocketNotification('notification', message);
 			}
 
 		});
