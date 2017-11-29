@@ -44,7 +44,7 @@ Module.register('MMM-PyArduinoControl',{
 	},
 
 	// Main
-	start: function() {
+	start() {
 		//this.sendSocketNotification('CONFIG', this.config);
 		Log.info(`Starting module: ${this.name}`);
 	}
