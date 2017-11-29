@@ -1,0 +1,28 @@
+{
+  "name": "magic-mirror-module-pyarduinocontrol",
+  "version": "1.0.0",
+  "description": "This module is meant to control Arduino boards with WiFi connectivity through the use of MQTT so that notifications can be sent when stuff happens and pulses get sent when stuff needs to happen.",
+  "main": "MMM-PyArduinoControl.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axellejamous/MMM-PyArduinoControl.git"
+  },
+  "keywords": [
+    "magic",
+    "mirror",
+    "module",
+    "python"
+  ],
+  "author": "Axelle Jamous",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/axellejamous/MMM-PyArduinoControl/issues"
+  },
+  "homepage": "https://github.com/axellejamous/MMM-PyArduinoControl#readme",
+  "dependencies": {
+    "python-shell": "latest"
+    }
+}

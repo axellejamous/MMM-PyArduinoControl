@@ -4,46 +4,50 @@
  * By Axelle Jamous
  * Based on https://github.com/paviro/MMM-Facial-Recognition
  */
+var mqtt = require('mqtt')
+//var broker = "172.20.10.5"
+//var client  = mqtt.connect(broker)
 
- Module.register('MMM-PyArduinoControl',{
-    defaults: {
+
+Module.register('MMM-PyArduinoControl',{
+	//	Variables
+	snd_topic = "coffee/rcver",
+	rcv_topic = "coffee/snder",
+	setup_topic = "setup",
+	client  = mqtt.connect('mqtt://test.mosquitto.org'),
+
+	defaults: {
         //example
         welcomeMessage: true        
     },
-    
-    button_press : function(){
-        //show something on the screen or do something
-    },
-
-    // Override socket notification handler.
-	socketNotificationReceived: function(notification, payload) {
-		if (payload.action == "btnPressed"){
-            button_press();
-        }
-            //example
-            if (this.config.welcomeMessage) {
-				//this.sendNotification("SHOW_ALERT", {type: "notification", message: this.translate("message").replace("%person", this.current_user), title: this.translate("title")});
-			}
-		else if (payload.action == "otherAction"){
-            //do something else
-		}
-	},
-
-
+	
+	/**
+     * MQTT Section
+     * @description sets up mqtt connector, listener and publisher 
+     */
+	client:on('connect', function () {
+		client.subscribe(setup_topic)
+		client.publish('presence', 'Hello from MagicMirror side')
+	}),
+	  
+	client:on('message', function (topic, message) {
+		// message is Buffer
+		console.log(message.toString())
+		client.end()
+	}),
+	
     notificationReceived: function(notification, payload, sender) {
-		if (notification === 'DOM_OBJECTS_CREATED') {
-            var self = this;
-			MM.getModules().exceptWithClass("default").enumerate(function(module) {
-				module.hide(1000, function() {
-					Log.log('Module is hidden.');
-				}, {lockString: self.identifier});
-			});
-		}
+        if (this.alarmFired){
+            if (notification === "STOP_ALARM"){
+                Log.info('Alarm stopped!'); 
+                this.resetAlarmClock();         
+            }
+        }
 	},
 
+	// Main
 	start: function() {
-		this.current_user = null;
-		this.sendSocketNotification('CONFIG', this.config);
+		//this.sendSocketNotification('CONFIG', this.config);
 		Log.info('Starting module: ' + this.name);
 	}
  });
