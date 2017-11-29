@@ -17,8 +17,6 @@ Module.register('MMM-PyArduinoControl',{
 	client  = mqtt.connect('mqtt://test.mosquitto.org'),
 
 	defaults: {
-        //example
-        welcomeMessage: true        
     },
 	
 	/**
@@ -27,27 +25,27 @@ Module.register('MMM-PyArduinoControl',{
      */
 	client:on('connect', function () {
 		client.subscribe(setup_topic)
-		client.publish('presence', 'Hello from MagicMirror side')
+		client.publish(setup_topic, 'Hello from MagicMirror side')
 	}),
 	  
 	client:on('message', function (topic, message) {
 		// message is Buffer
 		console.log(message.toString())
-		client.end()
+		//client.end()
 	}),
 	
     notificationReceived: function(notification, payload, sender) {
-        if (this.alarmFired){
-            if (notification === "STOP_ALARM"){
-                Log.info('Alarm stopped!'); 
-                this.resetAlarmClock();         
-            }
-        }
+        if (notification === "STOP_ALARM"){
+            Log.info("PyArduinoControl module says: Alarm stop received."); 
+			
+			// Send the command to signal the Arduino that it can start setting coffee
+			client.publish(snd_topic, "set_coffee");
+		}
 	},
 
 	// Main
 	start: function() {
 		//this.sendSocketNotification('CONFIG', this.config);
-		Log.info('Starting module: ' + this.name);
+		Log.info(`Starting module: ${this.name}`);
 	}
  });

@@ -5,6 +5,7 @@
  * Based on https://github.com/paviro/MMM-Facial-Recognition
  */
 
+ /*
  Module.register('MMM-PyArduinoControl',{
     defaults: {
         //example
@@ -44,4 +45,4 @@
 		//this.sendSocketNotification('CONFIG', this.config);
 		Log.info('Starting module: ' + this.name);
 	}
- });
+ }); */

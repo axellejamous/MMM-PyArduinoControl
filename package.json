@@ -1,7 +1,7 @@
 {
   "name": "mmm-pyarduinocontrol",
   "version": "1.0.0",
-  "description": "MQTT client for MM\u001b[D\u001b[D\u001b[D\u001b[module",
+  "description": "mqtt module for magic mirror",
   "main": "MMM-PyArduinoControl.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,14 +11,17 @@
     "url": "git+https://github.com/axellejamous/MMM-PyArduinoControl.git"
   },
   "keywords": [
-    "MagicMirror",
+    "magicmirror",
     "module",
-    "MQTT"
+    "mqtt"
   ],
   "author": "AxelleJamous",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/axellejamous/MMM-PyArduinoControl/issues"
   },
-  "homepage": "https://github.com/axellejamous/MMM-PyArduinoControl#readme"
+  "homepage": "https://github.com/axellejamous/MMM-PyArduinoControl#readme",
+  "dependencies": {
+    "mqtt": "mqtt"
+  }
 }
