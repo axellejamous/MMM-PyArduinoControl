@@ -2,50 +2,89 @@
  * Module: MMM-PyArduinoControl
  *
  * By Axelle Jamous
- * Based on https://github.com/paviro/MMM-Facial-Recognition
+ * Based on https://github.com/javiergayala/MMM-mqtt
  */
-var mqtt = require('mqtt')
-//var broker = "172.20.10.5"
-//var client  = mqtt.connect(broker)
-
+//var mqtt = require('mqtt')
 
 Module.register('MMM-PyArduinoControl',{
-	//	Variables
-	snd_topic = "coffee/rcver",
-	rcv_topic = "coffee/snder",
-	setup_topic = "setup",
-	client  = mqtt.connect('mqtt://test.mosquitto.org'),
-
 	defaults: {
-    },
+		mqttServer: 'mqtt://test.mosquitto.org',
+		mode: 'send',
+		loadingText: 'Loading MQTT Data...',
+		topic: 'coffee/snd',
+		showTitle: false,
+		title: 'MQTT Data',
+		interval: 300000,
+		postText: ''
+	  },
 	
-	/**
-     * MQTT Section
-     * @description sets up mqtt connector, listener and publisher 
-     */
-	client:on('connect', function () {
-		client.subscribe(setup_topic)
-		client.publish(setup_topic, 'Hello from MagicMirror side')
-	}),
-	  
-	client:on('message', function (topic, message) {
-		// message is Buffer
-		console.log(message.toString())
-		//client.end()
-	}),
+	  // Main
+	  start: function() {
+		Log.info(`Starting module: ${this.name}`);		
+		//Log.info('Starting module: ' + this.name);
+		this.loaded = false;
+		this.mqttVal = '';
+		this.updateMqtt(this);
+	  },
 	
-    notificationReceived: function(notification, payload, sender) {
-        if (notification === "STOP_ALARM"){
-            Log.info("PyArduinoControl module says: Alarm stop received."); 
-			
-			// Send the command to signal the Arduino that it can start setting coffee
-			client.publish(snd_topic, "set_coffee");
+	  updateMqtt: function(self) {
+		self.sendSocketNotification('MQTT_SERVER', { mqttServer: self.config.mqttServer, topic: self.config.topic, mode: self.config.mode });
+		setTimeout(self.updateMqtt, self.config.interval, self);
+	  },
+	
+	  getDom: function() {
+		var wrapper = document.createElement('div');
+	
+		if (!this.loaded) {
+		  wrapper.innerHTML = this.config.loadingText;
+		  return wrapper;
 		}
-	},
-
-	// Main
-	start() {
-		//this.sendSocketNotification('CONFIG', this.config);
-		Log.info(`Starting module: ${this.name}`);
-	}
+	
+		if (this.config.showTitle) {
+		  var titleDiv = document.createElement('div');
+		  titleDiv.innerHTML = this.config.title;
+		  wrapper.appendChild(titleDiv);
+		}
+	
+		var mqttDiv = document.createElement('div');
+		mqttDiv.innerHTML = this.mqttVal.toString().concat(this.config.postText);
+		wrapper.appendChild(mqttDiv);
+	
+		return wrapper;
+	  },
+	
+	  socketNotificationReceived: function(notification, payload) {
+		if (notification === 'MQTT_DATA' && payload.topic === this.config.topic) {
+		  this.mqttVal = payload.data.toString();
+		  this.loaded = true;
+		  this.updateDom();
+		}
+	
+		if (notification === 'ERROR') {
+		  this.sendNotification('SHOW_ALERT', payload);
+		}
+	  },
+	
+	  notificationReceived: function(notification, payload, sender) {
+		var self = this;
+	
+		if (self.config.mode !== "send") {
+		  return;
+		}
+	
+		var topic;
+		if (sender) {
+		  Log.log(this.name + " received a module notification: " + notification + " from sender: " + sender.name + ": ", payload);
+		  topic = this.config.topic + "/" + sender.name + "/" + notification;
+		} else {
+		  Log.log(this.name + " received a system notification: " + notification + ": ", payload);
+		  topic = this.config.topic + "/" + notification;
+		}
+	
+		this.sendSocketNotification("MQTT_SEND", {
+		  mqttServer: self.config.mqttServer,
+		  topic: topic,
+		  payload: payload
+		});
+	  }
  });

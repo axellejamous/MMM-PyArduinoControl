@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/axellejamous/MMM-PyArduinoControl#readme",
   "dependencies": {
-    "mqtt": "mqtt"
+    "mqtt": "^1.10.0"
   }
 }
